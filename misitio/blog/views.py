@@ -3,6 +3,7 @@ from .models import Post
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def post_list(request):
+    posts = Post.published.all()
     object_list = Post.published.all()
     paginator = Paginator(object_list, 3) # 3 post en cada página
     page = request.GET.get('page')
@@ -14,7 +15,7 @@ def post_list(request):
     except EmptyPage:
         # Si la pagina esta fuera de rango libera la ultima 
         posts = paginator.page(paginator.num_pages)
-        
+
     return render(request, 'blog/post/list.html',
                     {'page': page,
                     'posts': posts})
@@ -29,6 +30,6 @@ def post_detail(request, year, month, day, post):
                                     publish__month=month,
                                     publish__day=day)
 
-    return render(request, 'blog/post/list.html',
-                    {'page': page,
-                    'posts': posts})    
+    return render(request,
+                    'blog/post/detail.html',
+                    {'post': post})    
